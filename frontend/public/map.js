@@ -11,7 +11,7 @@ const bathroomTypes = [
 
 
 // Load OpenStreetMap tiles
-L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+L.tileLayer('https://tiles.stadiamaps.com/tiles/alidade_smooth/{z}/{x}/{y}{r}.png', {
   maxZoom: 19,
 }).addTo(map);
 
