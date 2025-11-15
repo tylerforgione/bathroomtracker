@@ -6,17 +6,50 @@ export default function AuthPage({ onLogin, onBack }) {
   const [password, setPassword] = useState("");
   const [username, setUsername] = useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+const handleSubmit = async (e) => {
+  e.preventDefault();
 
-    // fake auth: pick a username
-    const finalUsername =
-      mode === "signup"
-        ? username || email.split("@")[0] || "User"
-        : email.split("@")[0] || "User";
+  const baseUrl = "http://localhost:8080/api/auth";
 
-    onLogin({ username: finalUsername });
-  };
+  try {
+    let response;
+
+    if (mode === "signup") {
+      // SIGN UP
+      response = await fetch(`${baseUrl}/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          username,
+          password,
+        }),
+      });
+    } else {
+      // SIGN IN
+      response = await fetch(`${baseUrl}/login`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          usernameOrEmail: email,
+          password,
+        }),
+      });
+    }
+
+    if (!response.ok) {
+      alert("Authentication failed");
+      return;
+    }
+
+    const user = await response.json(); // { id, email, username }
+    onLogin(user); // pass user to parent app
+
+  } catch (err) {
+    console.error("Auth error:", err);
+    alert("Error contacting the server");
+  }
+};
 
   return (
     <div className="auth-page">
