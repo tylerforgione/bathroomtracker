@@ -1,17 +1,21 @@
-
-import React, { useState, useMemo } from "react";
-import "./App.css";
-import ProfilePage from "./components/ProfilePage";
-import AuthPage from "./components/AuthPage"; // 👈 add this
-
+import React, { useState } from "react";
 
 export default function AuthPage({ onLogin, onBack }) {
   const [mode, setMode] = useState("signin"); // "signin" or "signup"
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [username, setUsername] = useState("");
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    // later: call backend here
-    onLogin(); // pretend login worked
+
+    // fake auth: pick a username
+    const finalUsername =
+      mode === "signup"
+        ? username || email.split("@")[0] || "User"
+        : email.split("@")[0] || "User";
+
+    onLogin({ username: finalUsername });
   };
 
   return (
@@ -26,6 +30,7 @@ export default function AuthPage({ onLogin, onBack }) {
 
       <div className="auth-toggle">
         <button
+          type="button"
           className={
             "auth-toggle-btn" +
             (mode === "signin" ? " auth-toggle-btn--active" : "")
@@ -35,6 +40,7 @@ export default function AuthPage({ onLogin, onBack }) {
           Sign in
         </button>
         <button
+          type="button"
           className={
             "auth-toggle-btn" +
             (mode === "signup" ? " auth-toggle-btn--active" : "")
@@ -48,18 +54,36 @@ export default function AuthPage({ onLogin, onBack }) {
       <form className="auth-form" onSubmit={handleSubmit}>
         <label className="auth-label">
           Email
-          <input className="auth-input" type="email" required />
+          <input
+            className="auth-input"
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            required
+          />
         </label>
 
         <label className="auth-label">
           Password
-          <input className="auth-input" type="password" required />
+          <input
+            className="auth-input"
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            required
+          />
         </label>
 
         {mode === "signup" && (
           <label className="auth-label">
             Username
-            <input className="auth-input" type="text" required />
+            <input
+              className="auth-input"
+              type="text"
+              value={username}
+              onChange={(e) => setUsername(e.target.value)}
+              required
+            />
           </label>
         )}
 
