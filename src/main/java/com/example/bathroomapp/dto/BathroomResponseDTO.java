@@ -12,4 +12,8 @@ public class BathroomResponseDTO {
     public int numUrinals;
     public Gender gender;
     public boolean outOfOrder;
+
+    public double averageRating;
+    public double averageSmell;
+    public double averageCleanliness;
 }
