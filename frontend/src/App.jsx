@@ -1,6 +1,9 @@
 import React, { useState, useMemo } from "react";
 import "./App.css";
 
+import MapView from "./components/MapView";
+import BottomSheet from "./components/BottomSheet";
+
 const TOILETS = [
   {
     id: 1,
@@ -57,6 +60,9 @@ const FILTERS = [
 ];
 
 function App() {
+  // 🔥 Move this INSIDE the component
+  const [activeBuilding, setActiveBuilding] = useState(null);
+
   const [activeFilters, setActiveFilters] = useState({
     clean: true,
     stars: false,
@@ -71,12 +77,11 @@ function App() {
 
   const handleMenuClick = (action) => {
     if (action === "list") {
-      setShowList((prev) => !prev); // open/close list view
+      setShowList((prev) => !prev);
     }
-    // later you can handle "leaderboard" and "suggest" here
     setMenuOpen(false);
   };
-  
+
   const toggleFilter = (key) => {
     setActiveFilters((prev) => ({
       ...prev,
@@ -98,6 +103,7 @@ function App() {
   return (
     <div className="page">
       <div className="app-shell">
+
         {/* Sidebar menu */}
         <aside className="sidebar">
           <div className="menu-wrapper">
@@ -170,33 +176,30 @@ function App() {
           </div>
 
           <div className="map-wrapper">
-            <iframe
-              title="McGill map"
-              className="map-iframe"
-              loading="lazy"
-              allowFullScreen
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2795.147721887315!2d-73.57880122365838!3d45.50478433146351!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x4cc91a46bb29af53%3A0x7ca73a7d6c2db4f3!2sMcGill%20University!5e0!3m2!1sen!2sca!4v1731670000000"
-            ></iframe>
+    <MapView onSelectBuilding={setActiveBuilding} />
+</div>
 
-            <div className={`drawer ${showList ? "drawer--open" : ""}`}>
-              {filteredToilets.length === 0 ? (
-                <p className="empty-text">No toilets match these filters 😔</p>
-              ) : (
-                filteredToilets.map((t) => (
-                  <article key={t.id} className="list-item">
-                    <h3>{t.name}</h3>
-                    <p className="list-meta">
-                      ⭐ {t.stars} • {t.stalls} stalls •{" "}
-                      {t.open ? "Open" : "Closed"}
-                    </p>
-                    <p className="list-meta">
-                      {t.clean ? "Very clean" : "Might be messy"}
-                      {t.broken ? " • ⚠ some issues" : ""}
-                    </p>
-                  </article>
-                ))
-              )}
-            </div>
+<BottomSheet
+    buildingId={activeBuilding}
+    onClose={() => setActiveBuilding(null)}
+/>
+          <div className={`drawer ${showList ? "drawer--open" : ""}`}>
+            {filteredToilets.length === 0 ? (
+              <p className="empty-text">No toilets match these filters 😔</p>
+            ) : (
+              filteredToilets.map((t) => (
+                <article key={t.id} className="list-item">
+                  <h3>{t.name}</h3>
+                  <p className="list-meta">
+                    ⭐ {t.stars} • {t.stalls} stalls • {t.open ? "Open" : "Closed"}
+                  </p>
+                  <p className="list-meta">
+                    {t.clean ? "Very clean" : "Might be messy"}
+                    {t.broken ? " • ⚠ some issues" : ""}
+                  </p>
+                </article>
+              ))
+            )}
           </div>
 
           <button

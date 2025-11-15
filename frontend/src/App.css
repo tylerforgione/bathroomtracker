@@ -165,6 +165,7 @@ body {
   background: #eee;
   height: 420px;
   position: relative;
+  z-index: 1;
 }
 
 .map-iframe {
@@ -274,4 +275,33 @@ body {
   .map-wrapper {
     height: 300px;
   }
+}
+
+.bottom-sheet {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  z-index: 9999; 
+  background: white;
+  padding: 20px;
+  border-radius: 20px 20px 0 0;
+
+  max-height: 70vh;
+  overflow-y: auto;
+  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+}
+
+.sheet-button {
+  display: block;
+  width: 100%;
+  padding: 12px;
+  margin-bottom: 12px;
+  border-radius: 10px;
+  border: 1px solid #ccc;
+  background: #f8f8f8;
+}
+
+.back-btn {
+  margin-bottom: 15px;
 }

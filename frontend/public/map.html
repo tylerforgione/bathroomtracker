@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8" />
+    <title>Bathroom Map</title>
+
+    <!-- Leaflet CSS -->
+    <link
+      rel="stylesheet"
+      href="https://unpkg.com/leaflet/dist/leaflet.css"
+    />
+
+    <!-- Your map CSS (in public/) -->
+    <link rel="stylesheet" href="map.css" />
+  </head>
+
+  <body>
+    <!-- Map -->
+    <div id="map"></div>
+
+    <!-- Bottom sheet -->
+    <div id="infoCard" class="hidden">
+      <h2 id="bathName"></h2>
+      <div id="bathContent"></div>
+    </div>
+
+    <!-- Leaflet JS -->
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <!-- Your map JS (in public/) -->
+    <script src="map.js"></script>
+  </body>
+</html>

@@ -1,0 +1,28 @@
+/* Map covers entire screen */
+#map {
+  height: 100vh;
+  width: 100vw;
+  z-index: 0; /* ensure the map stays below the card */
+}
+
+
+/* Bottom sheet */
+#infoCard {
+  position: fixed;
+  bottom: 0;
+  left: 0; right: 0;
+  background: white;
+  padding: 20px;
+  border-radius: 20px 20px 0 0;
+  box-shadow: 0 -4px 15px rgba(0,0,0,0.2);
+  transition: 0.3s ease;
+
+  /* THE FIX */
+  z-index: 1000;
+}
+
+
+.hidden {
+  transform: translateY(100%);
+  opacity: 0;
+}
