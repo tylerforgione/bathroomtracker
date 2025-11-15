@@ -217,20 +217,26 @@ body {
   z-index: 1;
 }
 
-/* LIST DRAWER */
+/* SMALL POPUP LIST OVER THE MAP */
 .drawer {
-  position: absolute;
-  right: 18px;
-  bottom: 70px;
-  width: 260px;
-  max-height: 300px;
-  background: rgba(255, 238, 243, 0.98);
-  border-radius: 18px;
-  padding: 10px;
-  box-shadow: var(--shadow-soft);
+  position: fixed; /* <— IMPORTANT: not absolute */
+  bottom: 90px;   /* adjust so it sits above "see list" button */
+  right: 30px;
+
+  width: 300px;
+  max-height: 380px;
+  color:#333;
+
+  background: white;
+  border-radius: 20px;
+  padding: 12px 14px;
+  box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
+
   display: none;
   flex-direction: column;
   overflow-y: auto;
+
+  z-index: 99999; /* <— ensures it stays above the map */
 }
 
 .drawer--open {
@@ -238,12 +244,20 @@ body {
 }
 
 .list-item {
-  background: white;
-  padding: 8px;
+  background: #f8f8f8;
+  padding: 10px;
+  color:#333;
   border-radius: 12px;
-  margin-bottom: 6px;
-  font-size: 12px;
+  margin-bottom: 8px;
+  font-size: 13px;
 }
+
+.empty-text {
+  text-align: center;
+  padding: 20px 0;
+  color: #888;
+}
+
 
 .see-list-btn {
   margin: 10px auto 0;
@@ -320,4 +334,36 @@ body {
   border-right: 8px solid transparent;
   border-top: 12px solid #4285f4;
   margin-top: -2px;
+}
+/* FLOATING SIDE PANEL (map stays interactive!) */
+.side-floating-panel {
+  position: absolute;
+  top: 30px;
+  right: 30px;
+
+  width: 340px;
+  max-height: 75vh;
+  overflow-y: auto;
+  color: #333;
+
+  background: white;
+  padding: 24px;
+  border-radius: 18px;
+
+  box-shadow: 0 12px 35px rgba(0,0,0,0.18);
+  z-index: 9999;
+
+  animation: sideSlideIn 0.25s ease-out;
+}
+
+/* Slide-in animation */
+@keyframes sideSlideIn {
+  from {
+    transform: translateX(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateX(0);
+    opacity: 1;
+  }
 }

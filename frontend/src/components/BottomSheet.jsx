@@ -2,7 +2,6 @@ import { useState, useEffect } from "react";
 import buildings from "../data/buildings";
 
 export default function BottomSheet({ buildingId, onClose }) {
-  // All hooks MUST be at the top, in this fixed order:
   const [selectedFloor, setSelectedFloor] = useState(null);
   const [selectedBathroomType, setSelectedBathroomType] = useState(null);
   const [reportMode, setReportMode] = useState(null);
@@ -14,22 +13,10 @@ export default function BottomSheet({ buildingId, onClose }) {
     setReportMode(null);
   }, [buildingId]);
 
-  // If nothing selected, don't render
-  if (!buildingId) {
-    return null;
-  }
+  if (!buildingId) return null;
 
   const building = buildings.find(b => b.id === buildingId);
-
-  if (!building) {
-    return (
-      <div className="bottom-sheet">
-        <h2>Error</h2>
-        <p>Building not found.</p>
-        <button onClick={onClose} className="back-btn">Close</button>
-      </div>
-    );
-  }
+  if (!building) return null;
 
   const bathroomTypes = {
     men: "Men's Bathroom",
@@ -39,32 +26,45 @@ export default function BottomSheet({ buildingId, onClose }) {
 
   const floors = Object.keys(building.floors);
 
+  /* Floating Right-Side Panel Wrapper */
+  const PanelWrapper = ({ children }) => (
+    <div className="side-floating-panel">
+      {children}
+    </div>
+  );
+
+  /* ------------------------------
+     1️⃣ SELECT FLOOR
+  ------------------------------ */
   if (selectedFloor === null) {
     return (
-      <div className="bottom-sheet">
+      <PanelWrapper>
         <h2>{building.name}</h2>
         <h3>Select a floor:</h3>
 
         {floors.map(floor => (
           <button
             key={floor}
-            onClick={() => setSelectedFloor(floor)}
             className="sheet-button"
+            onClick={() => setSelectedFloor(floor)}
           >
             {floor}
           </button>
         ))}
 
         <button onClick={onClose} className="back-btn">Close</button>
-      </div>
+      </PanelWrapper>
     );
   }
 
   const bathroomsOnFloor = building.floors[selectedFloor];
 
+  /* ------------------------------
+     2️⃣ SELECT BATHROOM TYPE
+  ------------------------------ */
   if (selectedBathroomType === null) {
     return (
-      <div className="bottom-sheet">
+      <PanelWrapper>
         <button className="back-btn" onClick={() => setSelectedFloor(null)}>
           ← Back
         </button>
@@ -75,26 +75,29 @@ export default function BottomSheet({ buildingId, onClose }) {
         {Object.keys(bathroomsOnFloor).map(type => (
           <button
             key={type}
-            onClick={() => setSelectedBathroomType(type)}
             className="sheet-button"
+            onClick={() => setSelectedBathroomType(type)}
           >
             {bathroomTypes[type]}
           </button>
         ))}
-      </div>
+      </PanelWrapper>
     );
   }
 
   const bathroom = bathroomsOnFloor[selectedBathroomType];
 
-  const updateStatus = newStatus => {
+  const updateStatus = (newStatus) => {
     bathroom.status = newStatus;
     alert(`Updated to: ${newStatus}`);
   };
 
+  /* ------------------------------
+     3️⃣ REPORT BROKEN SUBMENU
+  ------------------------------ */
   if (reportMode === "Broken") {
     return (
-      <div className="bottom-sheet">
+      <PanelWrapper>
         <button className="back-btn" onClick={() => setReportMode(null)}>
           ← Back
         </button>
@@ -110,14 +113,16 @@ export default function BottomSheet({ buildingId, onClose }) {
         <button className="sheet-button" onClick={() => updateStatus("Broken dryer")}>
           Hand Dryer
         </button>
-      </div>
+      </PanelWrapper>
     );
   }
 
-
+  /* ------------------------------
+     4️⃣ REFILL SUBMENU
+  ------------------------------ */
   if (reportMode === "Refill") {
     return (
-      <div className="bottom-sheet">
+      <PanelWrapper>
         <button className="back-btn" onClick={() => setReportMode(null)}>
           ← Back
         </button>
@@ -125,11 +130,13 @@ export default function BottomSheet({ buildingId, onClose }) {
         <h2>Refill Needed</h2>
 
         <button className="sheet-button" onClick={() => updateStatus("Refill Toilet Paper")}>
-           Toilet Paper
+          Toilet Paper
         </button>
+
         <button className="sheet-button" onClick={() => updateStatus("Refill Soap")}>
           Soap
         </button>
+
         <button className="sheet-button" onClick={() => updateStatus("Refill Paper Towel")}>
           Paper Towel
         </button>
@@ -142,23 +149,28 @@ export default function BottomSheet({ buildingId, onClose }) {
             Period Products
           </button>
         )}
-      </div>
+      </PanelWrapper>
     );
   }
+
+  /* ------------------------------
+     5️⃣ MAIN DETAILS SCREEN
+  ------------------------------ */
   return (
-    <div className="bottom-sheet">
+    <PanelWrapper>
       <button className="back-btn" onClick={() => setSelectedBathroomType(null)}>
         ← Back
       </button>
 
       <h2>
-  {bathroomTypes[selectedBathroomType]}  
-  <span style={{ fontWeight: 400, color: "#555", fontSize: "0.9em" }}>
-    {" — "}{building.name} {selectedFloor.toString().includes("Basement") ? "" : "Floor "}
-    {selectedFloor}
-  </span>
-</h2>
-
+        {bathroomTypes[selectedBathroomType]}
+        <span style={{ fontWeight: 400, color: "#555", fontSize: "0.9em" }}>
+          {" — "}
+          {building.name}{" "}
+          {selectedFloor.toString().includes("Basement") ? "" : "Floor "}
+          {selectedFloor}
+        </span>
+      </h2>
 
       <p><strong>Status:</strong> {bathroom.status}</p>
       <p><strong>Rating:</strong> {bathroom.rating}</p>
@@ -167,7 +179,7 @@ export default function BottomSheet({ buildingId, onClose }) {
       <br />
 
       <button className="sheet-button" onClick={() => updateStatus("OK")}>
-        Ok
+        OK
       </button>
 
       <button className="sheet-button" onClick={() => setReportMode("Broken")}>
@@ -177,6 +189,6 @@ export default function BottomSheet({ buildingId, onClose }) {
       <button className="sheet-button" onClick={() => setReportMode("Refill")}>
         Refill Needed
       </button>
-    </div>
+    </PanelWrapper>
   );
 }
