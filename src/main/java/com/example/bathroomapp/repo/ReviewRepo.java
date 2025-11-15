@@ -1,4 +1,7 @@
 package com.example.bathroomapp.repo;
 
-public class ReviewRepo {
+import com.example.bathroomapp.model.Review;
+import org.springframework.data.jpa.repository.*;
+
+public interface ReviewRepo extends JpaRepository<Review, Long> {
 }
