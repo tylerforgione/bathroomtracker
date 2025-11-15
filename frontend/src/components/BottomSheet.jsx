@@ -92,7 +92,7 @@ export default function BottomSheet({ buildingId, onClose }) {
     alert(`Updated to: ${newStatus}`);
   };
 
-  if (reportMode === "broken") {
+  if (reportMode === "Broken") {
     return (
       <div className="bottom-sheet">
         <button className="back-btn" onClick={() => setReportMode(null)}>
@@ -101,23 +101,21 @@ export default function BottomSheet({ buildingId, onClose }) {
 
         <h2>Report Broken</h2>
 
-        <button className="sheet-button" onClick={() => updateStatus("broken-stall")}>
+        <button className="sheet-button" onClick={() => updateStatus("Broken stall")}>
           Stall
         </button>
-        <button className="sheet-button" onClick={() => updateStatus("broken-sink")}>
+        <button className="sheet-button" onClick={() => updateStatus("Broken sink")}>
           Sink
         </button>
-        <button className="sheet-button" onClick={() => updateStatus("broken-dryer")}>
+        <button className="sheet-button" onClick={() => updateStatus("Broken dryer")}>
           Hand Dryer
         </button>
       </div>
     );
   }
 
-  // ---------------------------
-  // 4️⃣ REFILL SUBMENU
-  // ---------------------------
-  if (reportMode === "refill") {
+
+  if (reportMode === "Refill") {
     return (
       <div className="bottom-sheet">
         <button className="back-btn" onClick={() => setReportMode(null)}>
@@ -126,38 +124,41 @@ export default function BottomSheet({ buildingId, onClose }) {
 
         <h2>Refill Needed</h2>
 
-        <button className="sheet-button" onClick={() => updateStatus("refill-toilet-paper")}>
-          Refill Toilet Paper
+        <button className="sheet-button" onClick={() => updateStatus("Refill Toilet Paper")}>
+           Toilet Paper
         </button>
-        <button className="sheet-button" onClick={() => updateStatus("refill-soap")}>
-          Refill Soap
+        <button className="sheet-button" onClick={() => updateStatus("Refill Soap")}>
+          Soap
         </button>
-        <button className="sheet-button" onClick={() => updateStatus("refill-paper-towel")}>
-          Refill Paper Towel
+        <button className="sheet-button" onClick={() => updateStatus("Refill Paper Towel")}>
+          Paper Towel
         </button>
 
         {selectedBathroomType === "women" && (
           <button
             className="sheet-button"
-            onClick={() => updateStatus("refill-period-products")}
+            onClick={() => updateStatus("Refill Period Products")}
           >
-            Refill Period Products
+            Period Products
           </button>
         )}
       </div>
     );
   }
-
-  // ---------------------------
-  // 5️⃣ MAIN BATHROOM DETAILS
-  // ---------------------------
   return (
     <div className="bottom-sheet">
       <button className="back-btn" onClick={() => setSelectedBathroomType(null)}>
         ← Back
       </button>
 
-      <h2>{bathroomTypes[selectedBathroomType]}</h2>
+      <h2>
+  {bathroomTypes[selectedBathroomType]}  
+  <span style={{ fontWeight: 400, color: "#555", fontSize: "0.9em" }}>
+    {" — "}{building.name} {selectedFloor.toString().includes("Basement") ? "" : "Floor "}
+    {selectedFloor}
+  </span>
+</h2>
+
 
       <p><strong>Status:</strong> {bathroom.status}</p>
       <p><strong>Rating:</strong> {bathroom.rating}</p>
@@ -165,15 +166,15 @@ export default function BottomSheet({ buildingId, onClose }) {
 
       <br />
 
-      <button className="sheet-button" onClick={() => updateStatus("ok")}>
+      <button className="sheet-button" onClick={() => updateStatus("OK")}>
         OK
       </button>
 
-      <button className="sheet-button" onClick={() => setReportMode("broken")}>
+      <button className="sheet-button" onClick={() => setReportMode("Broken")}>
         Report Broken
       </button>
 
-      <button className="sheet-button" onClick={() => setReportMode("refill")}>
+      <button className="sheet-button" onClick={() => setReportMode("Refill")}>
         Refill Needed
       </button>
     </div>
