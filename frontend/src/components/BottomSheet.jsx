@@ -167,7 +167,7 @@ export default function BottomSheet({ buildingId, onClose }) {
       <br />
 
       <button className="sheet-button" onClick={() => updateStatus("OK")}>
-        OK
+        Ok
       </button>
 
       <button className="sheet-button" onClick={() => setReportMode("Broken")}>
