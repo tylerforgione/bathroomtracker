@@ -5,74 +5,15 @@ import AuthPage from "./components/AuthPage";
 
 import MapView from "./components/MapView";
 import BottomSheet from "./components/BottomSheet";
+import buildings from "./data/buildings"; // 👈 IMPORTANT: use real building data
 
-const TOILETS = [
-  {
-    id: 1,
-    name: "McConnell Basement Washroom",
-    lat: 45.5048,
-    lng: -73.5772,
-    clean: true,
-    stars: 4.7,
-    broken: false,
-    open: true,
-    stalls: 4,
-  },
-  {
-    id: 2,
-    name: "Redpath Library 2F",
-    lat: 45.5043,
-    lng: -73.5764,
-    clean: true,
-    stars: 4.2,
-    broken: false,
-    open: true,
-    stalls: 3,
-  },
-  {
-    id: 3,
-    name: "Bronfman Ground Floor",
-    lat: 45.5029,
-    lng: -73.5755,
-    clean: false,
-    stars: 3.1,
-    broken: true,
-    open: true,
-    stalls: 2,
-  },
-  {
-    id: 4,
-    name: "Burnside 3F",
-    lat: 45.5056,
-    lng: -73.5779,
-    clean: true,
-    stars: 4.9,
-    broken: false,
-    open: false,
-    stalls: 6,
-  },
-];
 
-const FILTERS = [
-  { key: "clean", label: "clean" },
-  { key: "stars", label: "> 4 stars" },
-  { key: "broken", label: "broken" },
-  { key: "open", label: "open" },
-  { key: "stalls", label: "> 3 stalls" },
-];
 
 function App() {
-  const [currentView, setCurrentView] = useState("map"); // map | profile | auth
+  const [currentView, setCurrentView] = useState("map");// map | profile | auth
   const [user, setUser] = useState(null);
   const [activeBuilding, setActiveBuilding] = useState(null);
-
-  const [activeFilters, setActiveFilters] = useState({
-    clean: true,
-    stars: false,
-    broken: false,
-    open: false,
-    stalls: false,
-  });
+  
 
   const [showList, setShowList] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
@@ -85,6 +26,7 @@ function App() {
     }));
   };
 
+  /* MENU ACTIONS */
   const handleMenuClick = (action) => {
     if (action === "list") {
       setShowList((prev) => !prev);
@@ -92,22 +34,11 @@ function App() {
     setMenuOpen(false);
   };
 
-  const filteredToilets = useMemo(() => {
-    return TOILETS.filter((t) => {
-      if (activeFilters.clean && !t.clean) return false;
-      if (activeFilters.stars && t.stars < 4) return false;
-      if (activeFilters.broken && !t.broken) return false;
-      if (activeFilters.open && !t.open) return false;
-      if (activeFilters.stalls && t.stalls < 3) return false;
-      return true;
-    });
-  }, [activeFilters]);
-
   return (
     <div className="page">
       <div className="app-shell">
 
-        {/* LEFT SIDEBAR MENU */}
+        {/* SIDEBAR */}
         <aside className="sidebar">
           <div className="menu-wrapper">
             <button
@@ -132,11 +63,34 @@ function App() {
           </div>
         </aside>
 
-        {/* MAIN CARD */}
+        {/* MAIN CONTENT */}
         <section className="main-card">
+
+          {/* HEADER */}
           <header className="top-bar">
             <h1 className="title">Toilet Watchers</h1>
 
+            <div className="profile-wrapper">
+              <button
+                className="profile-button"
+                onClick={() => setProfileOpen((p) => !p)}
+              >
+                M
+              </button>
+
+              {profileOpen && (
+                <div className="profile-dropdown">
+                  <button
+                    className="profile-item"
+                    onClick={() => {
+                      setCurrentView("profile");
+                      setProfileOpen(false);
+                    }}
+                  >
+                    My profile
+                  </button>
+                  <button className="profile-item">Settings</button>
+                  <button className="profile-item logout">Log out</button>
             <div className="top-right">
               {/* NOT LOGGED IN → show LOGIN BUTTON */}
               {!user && currentView !== "auth" && (
@@ -186,6 +140,69 @@ function App() {
               )}
             </div>
           </header>
+
+          {/* MAP */}
+          <div className="map-wrapper">
+            <MapView onSelectBuilding={setActiveBuilding} />
+          </div>
+
+          {/* FLOATING SIDE PANEL */}
+          <BottomSheet
+            buildingId={activeBuilding}
+            onClose={() => setActiveBuilding(null)}
+          />
+
+          {/* =============================== */}
+          {/*          LIST VIEW           */}
+          {/* =============================== */}
+
+          <div className={`drawer ${showList ? "drawer--open" : ""}`}>
+            <div className="drawer-content">
+              <h2 className="drawer-title">List View</h2>
+
+              {buildings.map((b) => {
+                const totalBaths = Object.values(b.floors)
+                  .reduce((acc, f) => acc + Object.keys(f).length, 0);
+
+                return (
+                  <article
+                    key={b.id}
+                    className="list-item"
+                    style={{ cursor: "pointer" }}
+                    onClick={() => {
+                      setActiveBuilding(b.id); // 👈 SAME as clicking a marker!
+                      setShowList(false);      // close list
+                    }}
+                  >
+                    <h3>{b.name}</h3>
+
+                    <p className="list-meta">
+                      Floors: {Object.keys(b.floors).length}
+                    </p>
+
+                    <p className="list-meta">
+                      Total bathrooms: {totalBaths}
+                    </p>
+                  </article>
+                );
+              })}
+
+              <button
+                className="close-drawer-btn"
+                onClick={() => setShowList(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+
+          {/* LIST BUTTON */}
+          <button
+            className="see-list-btn"
+            onClick={() => setShowList((v) => !v)}
+          >
+            {showList ? "hide list" : "see list"}
+          </button>
 
           {/* VIEW SWITCHING */}
           {currentView === "auth" && (
