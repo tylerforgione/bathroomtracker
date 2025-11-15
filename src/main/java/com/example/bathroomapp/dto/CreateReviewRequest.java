@@ -1,6 +1,6 @@
 package com.example.bathroomapp.dto;
 
-public class CreateRatingRequest {
+public class CreateReviewRequest {
     public Long bathroomId;
     public Long userId;
 

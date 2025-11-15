@@ -1,7 +1,9 @@
 package com.example.bathroomapp.dto;
+
 import com.example.bathroomapp.model.Gender;
 
-public class CreateBathroomRequest {
+public class BathroomResponseDTO {
+    public Long id;
     public String building;
     public int floor;
     public double lat;
@@ -9,5 +11,5 @@ public class CreateBathroomRequest {
     public int numStalls;
     public int numUrinals;
     public Gender gender;
-    public Long createdBy;
+    public boolean outOfOrder;
 }
