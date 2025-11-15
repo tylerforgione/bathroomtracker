@@ -39,9 +39,6 @@ export default function BottomSheet({ buildingId, onClose }) {
 
   const floors = Object.keys(building.floors);
 
-  // ---------------------------
-  // 1️⃣ FLOOR SELECTION
-  // ---------------------------
   if (selectedFloor === null) {
     return (
       <div className="bottom-sheet">
@@ -65,9 +62,6 @@ export default function BottomSheet({ buildingId, onClose }) {
 
   const bathroomsOnFloor = building.floors[selectedFloor];
 
-  // ---------------------------
-  // 2️⃣ BATHROOM TYPE SELECTION
-  // ---------------------------
   if (selectedBathroomType === null) {
     return (
       <div className="bottom-sheet">
@@ -98,9 +92,6 @@ export default function BottomSheet({ buildingId, onClose }) {
     alert(`Updated to: ${newStatus}`);
   };
 
-  // ---------------------------
-  // 3️⃣ REPORT BROKEN SUBMENU
-  // ---------------------------
   if (reportMode === "broken") {
     return (
       <div className="bottom-sheet">
