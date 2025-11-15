@@ -9,5 +9,5 @@ public class CreateBathroomRequest {
     public int numStalls;
     public int numUrinals;
     public Gender gender;
-    public Long createdBy;
+    public Long createdByUserId;
 }
