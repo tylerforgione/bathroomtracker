@@ -1,8 +1,8 @@
 import React, { useState, useMemo } from "react";
 import "./App.css";
 import ProfilePage from "./components/ProfilePage";
+import AuthPage from "./components/AuthPage";
 
-// Components
 import MapView from "./components/MapView";
 import BottomSheet from "./components/BottomSheet";
 
@@ -62,7 +62,8 @@ const FILTERS = [
 ];
 
 function App() {
-  const [currentView, setCurrentView] = useState("map"); // "map" or "profile"
+  const [currentView, setCurrentView] = useState("map"); // map | profile | auth
+  const [user, setUser] = useState(null);
   const [activeBuilding, setActiveBuilding] = useState(null);
 
   const [activeFilters, setActiveFilters] = useState({
@@ -75,7 +76,7 @@ function App() {
 
   const [showList, setShowList] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-  const [profileOpen, setProfileOpen] = useState(false); // ← added
+  const [profileOpen, setProfileOpen] = useState(false);
 
   const toggleFilter = (key) => {
     setActiveFilters((prev) => ({
@@ -134,91 +135,130 @@ function App() {
         {/* MAIN CARD */}
         <section className="main-card">
           <header className="top-bar">
-            
             <h1 className="title">Toilet Watchers</h1>
 
             <div className="top-right">
-              {/* PROFILE MENU */}
-              <div className="profile-wrapper">
-                <button
-                  className="profile-button"
-                  onClick={() => setProfileOpen((p) => !p)}
-                >
-                  M
-                </button>
+              {/* NOT LOGGED IN → show LOGIN BUTTON */}
+              {!user && currentView !== "auth" && (
+              <button
+                className="login-chip"
+                onClick={() => setCurrentView("auth")}
+              >
+                Log in
+              </button>)}
 
-                {profileOpen && (
-                  <div className="profile-dropdown">
-                    <button
-                    className="profile-item"
-                    onClick={() => {
-                      setCurrentView("profile");
-                      setProfileOpen(false);}}
-                    >
-                      My profile
+
+              {/* LOGGED IN → show AVATAR */}
+              {user && (
+                <div className="profile-wrapper">
+                  <button
+                    className="profile-button"
+                    onClick={() => setProfileOpen((p) => !p)}
+                  >
+                    {user.username[0].toUpperCase()}
                   </button>
-                  <button className="profile-item">Settings</button>
-                  <button className="profile-item logout">Log out</button>
-                  </div>)}
-              </div>
+
+                  {profileOpen && (
+                    <div className="profile-dropdown">
+                      <button
+                        className="profile-item"
+                        onClick={() => {
+                          setCurrentView("profile");
+                          setProfileOpen(false);
+                        }}
+                      >
+                        My profile
+                      </button>
+                      <button className="profile-item">Settings</button>
+                      <button
+                        className="profile-item logout"
+                        onClick={() => {
+                          setUser(null);
+                          setCurrentView("map");
+                          setProfileOpen(false);
+                        }}
+                      >
+                        Log out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
             </div>
           </header>
 
-          {/* FILTER BAR */}
-          <div className="filter-bar">
-            {FILTERS.map((f) => (
+          {/* VIEW SWITCHING */}
+          {currentView === "auth" && (
+            <AuthPage
+              onLogin={(userData) => {
+                setUser(userData);
+                setCurrentView("map");
+              }}
+              onBack={() => setCurrentView("map")}
+            />
+          )}
+
+          {currentView === "profile" && <ProfilePage user={user} />}
+
+          {currentView === "map" && (
+            <>
+              {/* FILTER BAR */}
+              <div className="filter-bar">
+                {FILTERS.map((f) => (
+                  <button
+                    key={f.key}
+                    className={
+                      "filter-pill" +
+                      (activeFilters[f.key] ? " filter-pill--active" : "")
+                    }
+                    onClick={() => toggleFilter(f.key)}
+                  >
+                    {f.label}
+                  </button>
+                ))}
+              </div>
+
+              {/* MAP VIEW */}
+              <div className="map-wrapper">
+                <MapView onSelectBuilding={setActiveBuilding} />
+              </div>
+
+              {/* BOTTOM SHEET */}
+              <BottomSheet
+                buildingId={activeBuilding}
+                onClose={() => setActiveBuilding(null)}
+              />
+
+              {/* LIST DRAWER */}
+              <div className={`drawer ${showList ? "drawer--open" : ""}`}>
+                {filteredToilets.length === 0 ? (
+                  <p className="empty-text">No toilets match these filters 😔</p>
+                ) : (
+                  filteredToilets.map((t) => (
+                    <article key={t.id} className="list-item">
+                      <h3>{t.name}</h3>
+                      <p className="list-meta">
+                        ⭐ {t.stars} • {t.stalls} stalls •{" "}
+                        {t.open ? "Open" : "Closed"}
+                      </p>
+                      <p className="list-meta">
+                        {t.clean ? "Very clean" : "Might be messy"}
+                        {t.broken ? " • ⚠ some issues" : ""}
+                      </p>
+                    </article>
+                  ))
+                )}
+              </div>
+
+              {/* LIST BUTTON */}
               <button
-                key={f.key}
-                className={
-                  "filter-pill" +
-                  (activeFilters[f.key] ? " filter-pill--active" : "")
-                }
-                onClick={() => toggleFilter(f.key)}
+                className="see-list-btn"
+                onClick={() => setShowList((v) => !v)}
               >
-                {f.label}
+                {showList ? "hide list" : "see list"}
               </button>
-            ))}
-          </div>
-
-          {/* MAP VIEW */}
-          <div className="map-wrapper">
-            <MapView onSelectBuilding={setActiveBuilding} />
-          </div>
-
-          {/* BOTTOM SHEET */}
-          <BottomSheet
-            buildingId={activeBuilding}
-            onClose={() => setActiveBuilding(null)}
-          />
-
-          {/* BATHROOM LIST DRAWER */}
-          <div className={`drawer ${showList ? "drawer--open" : ""}`}>
-            {filteredToilets.length === 0 ? (
-              <p className="empty-text">No toilets match these filters 😔</p>
-            ) : (
-              filteredToilets.map((t) => (
-                <article key={t.id} className="list-item">
-                  <h3>{t.name}</h3>
-                  <p className="list-meta">
-                    ⭐ {t.stars} • {t.stalls} stalls •{" "}
-                    {t.open ? "Open" : "Closed"}
-                  </p>
-                  <p className="list-meta">
-                    {t.clean ? "Very clean" : "Might be messy"}
-                    {t.broken ? " • ⚠ some issues" : ""}
-                  </p>
-                </article>
-              ))
-            )}
-          </div>
-
-          {/* LIST BUTTON */}
-          <button
-            className="see-list-btn"
-            onClick={() => setShowList((v) => !v)}
-          >
-            {showList ? "hide list" : "see list"}
-          </button>
+            </>
+          )}
         </section>
       </div>
     </div>
