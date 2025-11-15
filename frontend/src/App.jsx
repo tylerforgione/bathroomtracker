@@ -1,6 +1,8 @@
 import React, { useState, useMemo } from "react";
 import "./App.css";
+import ProfilePage from "./components/ProfilePage";
 
+// Components
 import MapView from "./components/MapView";
 import BottomSheet from "./components/BottomSheet";
 
@@ -60,7 +62,7 @@ const FILTERS = [
 ];
 
 function App() {
-  // 🔥 Move this INSIDE the component
+  const [currentView, setCurrentView] = useState("map"); // "map" or "profile"
   const [activeBuilding, setActiveBuilding] = useState(null);
 
   const [activeFilters, setActiveFilters] = useState({
@@ -72,21 +74,21 @@ function App() {
   });
 
   const [showList, setShowList] = useState(false);
-  const [darkToggle, setDarkToggle] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
-
-  const handleMenuClick = (action) => {
-    if (action === "list") {
-      setShowList((prev) => !prev);
-    }
-    setMenuOpen(false);
-  };
+  const [profileOpen, setProfileOpen] = useState(false); // ← added
 
   const toggleFilter = (key) => {
     setActiveFilters((prev) => ({
       ...prev,
       [key]: !prev[key],
     }));
+  };
+
+  const handleMenuClick = (action) => {
+    if (action === "list") {
+      setShowList((prev) => !prev);
+    }
+    setMenuOpen(false);
   };
 
   const filteredToilets = useMemo(() => {
@@ -104,7 +106,7 @@ function App() {
     <div className="page">
       <div className="app-shell">
 
-        {/* Sidebar menu */}
+        {/* LEFT SIDEBAR MENU */}
         <aside className="sidebar">
           <div className="menu-wrapper">
             <button
@@ -116,50 +118,53 @@ function App() {
 
             {menuOpen && (
               <div className="menu-dropdown">
-                <button
-                  className="menu-item"
-                  onClick={() => handleMenuClick("leaderboard")}
-                >
-                  Leaderboard
-                </button>
+                <button className="menu-item">Leaderboard</button>
                 <button
                   className="menu-item"
                   onClick={() => handleMenuClick("list")}
                 >
                   List view
                 </button>
-                <button
-                  className="menu-item"
-                  onClick={() => handleMenuClick("suggest")}
-                >
-                  Suggest others
-                </button>
+                <button className="menu-item">Suggest others</button>
               </div>
             )}
           </div>
         </aside>
 
-
-        {/* Main card */}
+        {/* MAIN CARD */}
         <section className="main-card">
           <header className="top-bar">
-            <div className="top-left">
-              <button className="icon-btn">✎</button>
-            </div>
-
+            
             <h1 className="title">Toilet Watchers</h1>
 
             <div className="top-right">
-              <div className="avatar">M</div>
-              <div
-                className={`toggle ${darkToggle ? "on" : ""}`}
-                onClick={() => setDarkToggle((v) => !v)}
-              >
-                <div className="toggle-knob" />
+              {/* PROFILE MENU */}
+              <div className="profile-wrapper">
+                <button
+                  className="profile-button"
+                  onClick={() => setProfileOpen((p) => !p)}
+                >
+                  M
+                </button>
+
+                {profileOpen && (
+                  <div className="profile-dropdown">
+                    <button
+                    className="profile-item"
+                    onClick={() => {
+                      setCurrentView("profile");
+                      setProfileOpen(false);}}
+                    >
+                      My profile
+                  </button>
+                  <button className="profile-item">Settings</button>
+                  <button className="profile-item logout">Log out</button>
+                  </div>)}
               </div>
             </div>
           </header>
 
+          {/* FILTER BAR */}
           <div className="filter-bar">
             {FILTERS.map((f) => (
               <button
@@ -175,14 +180,18 @@ function App() {
             ))}
           </div>
 
+          {/* MAP VIEW */}
           <div className="map-wrapper">
-    <MapView onSelectBuilding={setActiveBuilding} />
-</div>
+            <MapView onSelectBuilding={setActiveBuilding} />
+          </div>
 
-<BottomSheet
-    buildingId={activeBuilding}
-    onClose={() => setActiveBuilding(null)}
-/>
+          {/* BOTTOM SHEET */}
+          <BottomSheet
+            buildingId={activeBuilding}
+            onClose={() => setActiveBuilding(null)}
+          />
+
+          {/* BATHROOM LIST DRAWER */}
           <div className={`drawer ${showList ? "drawer--open" : ""}`}>
             {filteredToilets.length === 0 ? (
               <p className="empty-text">No toilets match these filters 😔</p>
@@ -191,7 +200,8 @@ function App() {
                 <article key={t.id} className="list-item">
                   <h3>{t.name}</h3>
                   <p className="list-meta">
-                    ⭐ {t.stars} • {t.stalls} stalls • {t.open ? "Open" : "Closed"}
+                    ⭐ {t.stars} • {t.stalls} stalls •{" "}
+                    {t.open ? "Open" : "Closed"}
                   </p>
                   <p className="list-meta">
                     {t.clean ? "Very clean" : "Might be messy"}
@@ -202,6 +212,7 @@ function App() {
             )}
           </div>
 
+          {/* LIST BUTTON */}
           <button
             className="see-list-btn"
             onClick={() => setShowList((v) => !v)}
