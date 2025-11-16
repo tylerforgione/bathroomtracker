@@ -1,11 +1,12 @@
 import React from "react";
 
 const MOCK_LEADERBOARD = [
-  { id: 1, username: "ToiletQueen", points: 124, reviews: 19 },
-  { id: 2, username: "FlushMaster", points: 98, reviews: 15 },
-  { id: 3, username: "BidetBabe", points: 87, reviews: 12 },
-  { id: 4, username: "StallScout", points: 65, reviews: 9 },
-  { id: 5, username: "PaperHero", points: 52, reviews: 7 },
+  { id: 1, username: "busta_josh", reviews: 19 },
+  { id: 2, username: "BayBouLou", reviews: 15 },
+  { id: 3, username: "bidetBoy67",  reviews: 12 },
+  { id: 4, username: "toilet_queen", reviews: 9 },
+  { id: 5, username: "the_mcgill_pisser", reviews: 7 },
+  {id: 6, username: "minnows", reviews: 1}
 ];
 
 export default function LeaderboardPage({ onBack }) {
@@ -37,7 +38,6 @@ export default function LeaderboardPage({ onBack }) {
           >
             <span className="leaderboard-rank">{index + 1}</span>
             <span className="leaderboard-name">{u.username}</span>
-            <span className="leaderboard-score">{u.points} pts</span>
             <span className="leaderboard-reviews">
               {u.reviews} reviews
             </span>
