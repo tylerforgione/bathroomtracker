@@ -9,7 +9,6 @@ import {
   serverTimestamp,
   query,
   where,
-  orderBy,
   onSnapshot
 } from "firebase/firestore";
 
@@ -59,77 +58,162 @@ export default function BottomSheet({ buildingId, onClose, onToast }) {
     typeRef.current = null;
   }, [buildingId]);
 
+  // Keep refs in sync with state
+  useEffect(() => {
+    if (selectedFloor) {
+      floorRef.current = selectedFloor;
+    }
+  }, [selectedFloor]);
+
+  useEffect(() => {
+    if (selectedBathroomType) {
+      typeRef.current = selectedBathroomType;
+    }
+  }, [selectedBathroomType]);
+
 
   /* ---------------------------------------------------------
      🔥 Live status listener
   ---------------------------------------------------------- */
   useEffect(() => {
-    if (!buildingId || !floorRef.current || !typeRef.current) return;
+    if (!buildingId || !selectedFloor || !selectedBathroomType) {
+      setLiveStatus(null);
+      return;
+    }
 
+    console.log("Setting up reports listener for:", buildingId, selectedFloor, selectedBathroomType);
+
+    // Removed orderBy to ensure real-time updates work immediately
+    // We'll sort in memory instead
     const q = query(
       collection(db, "reports"),
       where("buildingId", "==", buildingId),
-      where("floor", "==", floorRef.current.toString()),
-      where("bathroomType", "==", typeRef.current),
-      orderBy("timestamp", "desc")
+      where("floor", "==", selectedFloor.toString()),
+      where("bathroomType", "==", selectedBathroomType)
     );
 
-    const unsub = onSnapshot(q, (snapshot) => {
-      if (!snapshot.empty) {
-        setLiveStatus(snapshot.docs[0].data());
-      } else {
-        setLiveStatus(null);
+    const unsub = onSnapshot(
+      q,
+      (snapshot) => {
+        console.log("Reports snapshot received:", snapshot.size, "documents");
+        if (!snapshot.empty) {
+          // Sort by timestamp in memory (newest first) for immediate updates
+          const sortedDocs = snapshot.docs.sort((a, b) => {
+            const timeA = a.data().timestamp?.toMillis?.() || 0;
+            const timeB = b.data().timestamp?.toMillis?.() || 0;
+            return timeB - timeA; // Descending order (newest first)
+          });
+          const latestReport = sortedDocs[0].data();
+          console.log("Latest report:", latestReport);
+          setLiveStatus(latestReport);
+        } else {
+          console.log("No reports found");
+          setLiveStatus(null);
+        }
+      },
+      (error) => {
+        console.error("Error listening to reports:", error);
+        onToast("Error loading status updates");
       }
-    });
+    );
 
-    return () => unsub();
-  }, [buildingId]);
+    return () => {
+      console.log("Cleaning up reports listener");
+      unsub();
+    };
+  }, [buildingId, selectedFloor, selectedBathroomType]);
 
 
   /* ---------------------------------------------------------
      ⭐ Live rating listener
   ---------------------------------------------------------- */
   useEffect(() => {
-    if (!buildingId || !floorRef.current || !typeRef.current) return;
+    if (!buildingId || !selectedFloor || !selectedBathroomType) {
+      setLiveRating(null);
+      return;
+    }
+
+    console.log("Setting up ratings listener for:", buildingId, selectedFloor, selectedBathroomType);
 
     const q = query(
       collection(db, "ratings"),
       where("buildingId", "==", buildingId),
-      where("floor", "==", floorRef.current.toString()),
-      where("bathroomType", "==", typeRef.current)
+      where("floor", "==", selectedFloor.toString()),
+      where("bathroomType", "==", selectedBathroomType)
     );
 
-    const unsub = onSnapshot(q, (snapshot) => {
-      if (snapshot.empty) {
-        setLiveRating(null);
-        return;
+    const unsub = onSnapshot(
+      q,
+      (snapshot) => {
+        console.log("Ratings snapshot received:", snapshot.size, "documents");
+        if (snapshot.empty) {
+          setLiveRating(null);
+          return;
+        }
+
+        const ratings = snapshot.docs.map((d) => d.data().rating);
+        const avg = ratings.reduce((a, b) => a + b, 0) / ratings.length;
+        console.log("Average rating:", avg);
+        setLiveRating(avg.toFixed(1));
+      },
+      (error) => {
+        console.error("Error listening to ratings:", error);
+        onToast("Error loading ratings");
       }
+    );
 
-      const ratings = snapshot.docs.map((d) => d.data().rating);
-      const avg = ratings.reduce((a, b) => a + b, 0) / ratings.length;
-      setLiveRating(avg.toFixed(1));
-    });
-
-    return () => unsub();
-  }, [buildingId]);
+    return () => {
+      console.log("Cleaning up ratings listener");
+      unsub();
+    };
+  }, [buildingId, selectedFloor, selectedBathroomType]);
 
 
   /* ---------------------------------------------------------
      Submit rating
   ---------------------------------------------------------- */
   async function submitRating(n) {
+    if (!selectedFloor || !selectedBathroomType) {
+      onToast("Please select a floor and bathroom type first");
+      return;
+    }
+
+    if (!buildingId) {
+      onToast("No building selected");
+      return;
+    }
+
     setUserRating(n);
 
-    await addDoc(collection(db, "ratings"), {
+    const ratingData = {
       buildingId,
-      floor: floorRef.current.toString(),
-      bathroomType: typeRef.current,
+      floor: selectedFloor.toString(),
+      bathroomType: selectedBathroomType,
       rating: n,
       timestamp: serverTimestamp()
-    });
+    };
 
-    onToast("Thanks for rating!");
+    console.log("Submitting rating:", ratingData);
 
+    try {
+      const docRef = await addDoc(collection(db, "ratings"), ratingData);
+      console.log("Rating submitted successfully with ID:", docRef.id);
+      onToast("Thanks for rating!");
+    } catch (error) {
+      console.error("Error submitting rating:", error);
+      console.error("Error details:", {
+        code: error.code,
+        message: error.message,
+        stack: error.stack
+      });
+      
+      if (error.code === 'permission-denied') {
+        onToast("Permission denied. Check Firestore security rules.");
+      } else {
+        onToast("Failed to submit rating. Please try again.");
+      }
+      setUserRating(null);
+    }
   }
 
 
@@ -137,15 +221,44 @@ export default function BottomSheet({ buildingId, onClose, onToast }) {
      Submit status report
   ---------------------------------------------------------- */
   async function updateStatus(issue) {
-    await addDoc(collection(db, "reports"), {
+    if (!selectedFloor || !selectedBathroomType) {
+      onToast("Please select a floor and bathroom type first");
+      return;
+    }
+
+    if (!buildingId) {
+      onToast("No building selected");
+      return;
+    }
+
+    const reportData = {
       buildingId,
-      floor: floorRef.current,
-      bathroomType: typeRef.current,
+      floor: selectedFloor.toString(),
+      bathroomType: selectedBathroomType,
       issue,
       timestamp: serverTimestamp(),
-    });
-    onToast(`Reported: ${issue}`);
+    };
 
+    console.log("Submitting report:", reportData);
+
+    try {
+      const docRef = await addDoc(collection(db, "reports"), reportData);
+      console.log("Report submitted successfully with ID:", docRef.id);
+      onToast(`Reported: ${issue}`);
+    } catch (error) {
+      console.error("Error submitting report:", error);
+      console.error("Error details:", {
+        code: error.code,
+        message: error.message,
+        stack: error.stack
+      });
+      
+      if (error.code === 'permission-denied') {
+        onToast("Permission denied. Check Firestore security rules.");
+      } else {
+        onToast("Failed to submit report. Please try again.");
+      }
+    }
   }
 
 
@@ -324,6 +437,13 @@ export default function BottomSheet({ buildingId, onClose, onToast }) {
       </p>
 
       <p><strong>Stalls:</strong> {bathroom.stalls}</p>
+
+      {/* ⭐ NEW: show urinals only for men's bathrooms */}
+      {selectedBathroomType === "men" && bathroom.urinals !== undefined && (
+        <p>
+          <strong>Urinals:</strong> {bathroom.urinals}
+        </p>
+      )}
 
       <p>
         <strong>Rating:</strong>{" "}
