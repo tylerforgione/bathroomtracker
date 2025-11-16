@@ -500,3 +500,99 @@ body {
 .auth-submit:hover {
   opacity: 0.9;
 }
+
+/* ---------- LEADERBOARD PAGE ---------- */
+
+.leaderboard-page {
+  margin-top: 20px;
+  padding: 24px 28px 32px;
+  background: #ffeef3;
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
+  align-self: center;
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* reuse same cute back button as auth */
+.auth-page .back-btn,
+.leaderboard-page .back-btn {
+  align-self: flex-start;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: #f5cbd7;
+  color: var(--text-main);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.auth-page .back-btn:hover,
+.leaderboard-page .back-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+.leaderboard-heading {
+  font-size: 24px;
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.leaderboard-subtitle {
+  font-size: 14px;
+  color: #7b3c47;
+}
+
+.leaderboard-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.leaderboard-row {
+  display: grid;
+  grid-template-columns: 32px 1fr auto auto;
+  align-items: center;
+  background: #fff;
+  border-radius: 14px;
+  padding: 10px 14px;
+  font-size: 14px;
+  column-gap: 10px;
+}
+
+.leaderboard-rank {
+  font-weight: 700;
+  color: var(--accent);
+}
+
+.leaderboard-name {
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.leaderboard-score,
+.leaderboard-reviews {
+  font-size: 13px;
+  color: #7b3c47;
+}
+
+/* fun highlight for top 3 */
+.leaderboard-row--gold {
+  background: #ffe8b3;
+}
+
+.leaderboard-row--silver {
+  background: #f0f0f5;
+}
+
+.leaderboard-row--bronze {
+  background: #ffd6b3;
+}
