@@ -8,7 +8,7 @@ export default function ProfilePage({ user, onBack }) {
     if (!user) return;
 
     async function loadUserReviews() {
-      try {
+      try {s
         const res = await fetch(
           `http://localhost:8080/api/reviews/user/${user.id}`
         );
@@ -49,17 +49,17 @@ export default function ProfilePage({ user, onBack }) {
 
       <div className="profile-card">
         <div className="profile-row">
-          <span className="profile-label">Name</span>
+          <span className="profile-label">Username: </span>
           <span className="profile-value">{user.username}</span>
         </div>
 
         <div className="profile-row">
-          <span className="profile-label">Email</span>
+          <span className="profile-label">Email: </span>
           <span className="profile-value">{user.email}</span>
         </div>
 
         <div className="profile-row">
-          <span className="profile-label">Total reviews</span>
+          <span className="profile-label">Total reviews logged: </span>
           <span className="profile-value">{reviews.length}</span>
         </div>
       </div>
