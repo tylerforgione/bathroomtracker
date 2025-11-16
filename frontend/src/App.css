@@ -265,6 +265,7 @@ body {
 .drawer-title {
   font-size: 20px;
   font-weight: 700;
+  color:#333;
   color: var(--accent);
   margin-bottom: 10px;
 }
@@ -434,6 +435,7 @@ body {
   right: 30px;
   width: 320px;
   max-height: 70vh;
+  color:#333;
   background: #ffffff;
   border-radius: 20px;
   padding: 18px;
@@ -494,6 +496,7 @@ body {
 .toast--show {
   opacity: 1;
   transform: translateX(-50%) translateY(-10px);
+}
 /* ---------- LEADERBOARD PAGE ---------- */
 .leaderboard-page {
   margin: 40px auto;
@@ -616,4 +619,49 @@ body {
   border-right: 8px solid transparent;
   border-top: 12px solid #4285f4;
   margin-top: -2px;
+}
+
+/* Force proper styling for BottomSheet buttons */
+.side-floating-panel .sheet-button,
+.side-floating-panel .back-btn {
+  background: #f8f8f8 !important;
+  color: #333 !important;
+  border-radius: 12px !important;
+  border: 1px solid #ddd !important;
+  padding: 12px !important;
+  display: inline-block !important;
+  margin-bottom: 10px;
+}
+
+/* Make "OK", "Report Broken", "Refill Needed" normal width */
+.side-floating-panel .sheet-button {
+  width: 100% !important;
+}
+
+/* Make Back button cute + small */
+.side-floating-panel .back-btn {
+  background: #00000013 !important;
+  padding: 10px 16px !important;
+  width: auto !important;
+  font-weight: 600;
+}
+.toast {
+  position: fixed;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: #ffd700;
+  color: white;
+  padding: 12px 22px;
+  border-radius: 20px;
+  font-size: 15px;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(0,0,0,0.2);
+  z-index: 999999; /* above everything */
+  opacity: 1 ;
+}
+
+.custom-pin {
+  background: transparent !important;
+  border: none !important;
 }
