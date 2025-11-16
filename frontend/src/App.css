@@ -16,7 +16,9 @@
   font-family: system-ui, sans-serif;
 }
 
-html, body, #root {
+html,
+body,
+#root {
   height: 100%;
   width: 100%;
 }
@@ -64,30 +66,24 @@ body {
   border: none;
   cursor: pointer;
   color: #7b3c47;
-
-  /* PERFECT CENTERING */
   display: flex;
   align-items: center;
   justify-content: center;
   font-size: 18px;
-  line-height: 1;
   padding: 0;
 }
 
-/* DROPDOWN MENU (WORKING VERSION) */
+/* DROPDOWN MENU */
 .menu-dropdown {
   position: absolute;
-  top: 48px;  /* directly under chip */
-  left: 0;    /* aligned with left edge of chip */
-
+  top: 48px;
+  left: 0;
   background: #ffeef3;
   border-radius: 16px;
   padding: 12px 0;
   min-width: 210px;
-  box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
   z-index: 20;
-
-  transform: none; /* ensure no centering happens */
 }
 
 .menu-item {
@@ -206,7 +202,6 @@ body {
   color: #fff;
 }
 
-
 /* FILTER BAR */
 .filter-bar {
   display: flex;
@@ -240,36 +235,44 @@ body {
   z-index: 1;
 }
 
-/* SMALL POPUP LIST OVER THE MAP */
+/* DRAWER */
 .drawer {
-  position: fixed; /* <— IMPORTANT: not absolute */
-  bottom: 90px;   /* adjust so it sits above "see list" button */
+  position: fixed;
+  bottom: 90px;
   right: 30px;
-
   width: 300px;
   max-height: 380px;
-  color:#333;
-
+  color: #333;
   background: white;
   border-radius: 20px;
   padding: 12px 14px;
   box-shadow: 0 10px 35px rgba(0, 0, 0, 0.15);
-
   display: none;
   flex-direction: column;
   overflow-y: auto;
-
-  z-index: 99999; /* <— ensures it stays above the map */
+  z-index: 99999;
 }
 
 .drawer--open {
   display: flex;
 }
 
+.drawer-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.drawer-title {
+  font-size: 20px;
+  font-weight: 700;
+  color: var(--accent);
+  margin-bottom: 10px;
+}
+
 .list-item {
   background: #f8f8f8;
   padding: 10px;
-  color:#333;
+  color: #333;
   border-radius: 12px;
   margin-bottom: 8px;
   font-size: 13px;
@@ -280,7 +283,6 @@ body {
   padding: 20px 0;
   color: #888;
 }
-
 
 .see-list-btn {
   margin: 10px auto 0;
@@ -304,110 +306,26 @@ body {
   background: white;
   padding: 20px;
   border-radius: 20px 20px 0 0;
-  color: #333 !important; 
-
+  color: #333 !important;
   max-height: 70vh;
   overflow-y: auto;
-  box-shadow: 0 -4px 20px rgba(0,0,0,0.15);
+  box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.15);
 }
 
-.sheet-button {
-  display: block;
-  width: 100%;
-  padding: 12px;
-  margin-bottom: 12px;
-  border-radius: 10px;
-  color: #333 !important; 
-  border: 1px solid #ccc;
-  background: #f8f8f8;
-}
-
-.back-btn {
-  margin-bottom: 15px;
-}
-
-.number-pin-wrapper {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  transform: translateY(-4px); /* small lift so tip sits at coordinates */
-}
-
-.number-marker {
-  background-color: #4285f4;
-  color: white;
-  font-weight: bold;
-  border-radius: 50%;
-  width: 32px;
-  height: 32px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: none;
-    box-shadow:
-    0 3px 6px rgba(0,0,0,0.2),
-    0 1px 2px rgba(0,0,0,0.1);
-  font-size: 15px;
-}
-
-.number-pin-tail {
-  width: 0;
-  height: 0;
-  border-left: 8px solid transparent;
-  border-right: 8px solid transparent;
-  border-top: 12px solid #4285f4;
-  margin-top: -2px;
-}
-/* FLOATING SIDE PANEL (map stays interactive!) */
-.side-floating-panel {
-  position: absolute;
-  top: 30px;
-  right: 30px;
-
-  width: 340px;
-  max-height: 75vh;
-  overflow-y: auto;
-  color: #333;
-
-  background: white;
-  padding: 24px;
-  border-radius: 18px;
-
-  box-shadow: 0 12px 35px rgba(0,0,0,0.18);
-  z-index: 9999;
-
-  animation: sideSlideIn 0.25s ease-out;
-}
-
-/* Slide-in animation */
-@keyframes sideSlideIn {
-  from {
-    transform: translateX(30px);
-    opacity: 0;
-  }
-  to {
-    transform: translateX(0);
-    opacity: 1;
-  }
-}
-/* ---------- AUTH PAGE ---------- */
-
+/* ---------- AUTH PAGE (CARD) ---------- */
 .auth-page {
-  margin-top: 20px;
+  margin: 40px auto;
   padding: 24px 28px 32px;
   background: #ffeef3;
   border-radius: 20px;
   box-shadow: var(--shadow-soft);
-  align-self: center;
   width: 100%;
   max-width: 480px;
-
   display: flex;
   flex-direction: column;
   gap: 18px;
 }
 
-/* make only the auth back button styled, not others using .back-btn */
 .auth-page .back-btn {
   align-self: flex-start;
   padding: 8px 16px;
@@ -425,6 +343,7 @@ body {
   color: #fff;
 }
 
+/* ---------- AUTH FORM CONTENT ---------- */
 .auth-heading {
   font-size: 22px;
   font-weight: 700;
@@ -438,6 +357,7 @@ body {
   border-radius: var(--radius-pill);
   padding: 4px;
   gap: 4px;
+  margin-top: 6px;
 }
 
 .auth-toggle-btn {
@@ -457,6 +377,7 @@ body {
 }
 
 .auth-form {
+  margin-top: 12px;
   display: flex;
   flex-direction: column;
   gap: 12px;
@@ -478,6 +399,11 @@ body {
   background: #fff;
   font-size: 14px;
   outline: none;
+  color: #000;
+}
+
+.auth-input::placeholder {
+  color: #888;
 }
 
 .auth-input:focus {
@@ -502,14 +428,12 @@ body {
 }
 
 /* ---------- LEADERBOARD PAGE ---------- */
-
 .leaderboard-page {
-  margin-top: 20px;
+  margin: 40px auto;
   padding: 24px 28px 32px;
   background: #ffeef3;
   border-radius: 20px;
   box-shadow: var(--shadow-soft);
-  align-self: center;
   width: 100%;
   max-width: 640px;
   display: flex;
@@ -517,8 +441,6 @@ body {
   gap: 18px;
 }
 
-/* reuse same cute back button as auth */
-.auth-page .back-btn,
 .leaderboard-page .back-btn {
   align-self: flex-start;
   padding: 8px 16px;
@@ -531,7 +453,6 @@ body {
   cursor: pointer;
 }
 
-.auth-page .back-btn:hover,
 .leaderboard-page .back-btn:hover {
   background: var(--accent);
   color: #fff;
@@ -584,7 +505,6 @@ body {
   color: #7b3c47;
 }
 
-/* fun highlight for top 3 */
 .leaderboard-row--gold {
   background: #ffe8b3;
 }
@@ -595,4 +515,38 @@ body {
 
 .leaderboard-row--bronze {
   background: #ffd6b3;
+}
+
+/* ---------- NUMBER MARKERS ON MAP ---------- */
+.number-pin-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  transform: translateY(-4px);
+}
+
+.number-marker {
+  background-color: #4285f4;
+  color: #fff;
+  font-weight: bold;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  box-shadow:
+    0 3px 6px rgba(0, 0, 0, 0.2),
+    0 1px 2px rgba(0, 0, 0, 0.1);
+  font-size: 15px;
+}
+
+.number-pin-tail {
+  width: 0;
+  height: 0;
+  border-left: 8px solid transparent;
+  border-right: 8px solid transparent;
+  border-top: 12px solid #4285f4;
+  margin-top: -2px;
 }

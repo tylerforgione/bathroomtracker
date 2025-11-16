@@ -1,0 +1,34 @@
+{
+  "hash": "900f18ff",
+  "configHash": "3d599a69",
+  "lockfileHash": "305dffcf",
+  "browserHash": "2bda6b55",
+  "optimized": {
+    "react": {
+      "src": "../../node_modules/react/index.js",
+      "file": "react.js",
+      "fileHash": "a136ad47",
+      "needsInterop": true
+    },
+    "react-dom/client": {
+      "src": "../../node_modules/react-dom/client.js",
+      "file": "react-dom_client.js",
+      "fileHash": "9c594d9d",
+      "needsInterop": true
+    },
+    "leaflet": {
+      "src": "../../node_modules/leaflet/dist/leaflet-src.js",
+      "file": "leaflet.js",
+      "fileHash": "d64c0048",
+      "needsInterop": true
+    }
+  },
+  "chunks": {
+    "chunk-JE4RKZ3F": {
+      "file": "chunk-JE4RKZ3F.js"
+    },
+    "chunk-BUSYA2B4": {
+      "file": "chunk-BUSYA2B4.js"
+    }
+  }
+}
