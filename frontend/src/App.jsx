@@ -32,7 +32,6 @@ function showToast(msg) {
 
 
   const [currentView, setCurrentView] = useState("map"); // map | profile | auth
-  const [currentView, setCurrentView] = useState("map"); // map | profile | auth | leaderboard
   const [user, setUser] = useState(null);
   const [activeBuilding, setActiveBuilding] = useState(null);
 
