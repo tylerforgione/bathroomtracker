@@ -136,7 +136,7 @@ function App() {
 
           {/* HEADER */}
           <header className="top-bar">
-            <h1 className="title">Toilet Watchers</h1>
+            <h1 className="title"><strong>LooLogger</strong></h1>
 
             <div className="top-right">
               {!user && (
