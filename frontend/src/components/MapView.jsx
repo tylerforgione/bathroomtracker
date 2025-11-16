@@ -51,8 +51,8 @@ function MapView({ onSelectBuilding }) {
 
 
     buildings.forEach((b) => {
-      const stats = countBathrooms(b);    
-      const icon = createNumberIcon(stats.total, stats); 
+      const stats = countBathrooms(b);
+      const icon = createNumberIcon(stats.total, stats);
 
       const marker = L.marker([b.lat, b.lng], { icon }).addTo(map);
 

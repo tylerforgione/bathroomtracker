@@ -1,8 +1,10 @@
-import React, { useState, useMemo } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
 import ProfilePage from "./components/ProfilePage";
 import AuthPage from "./components/AuthPage";
+import LeaderboardPage from "./components/LeaderBoardPage";
+
 import MapView from "./components/MapView";
 import BottomSheet from "./components/BottomSheet";
 
@@ -30,6 +32,7 @@ function showToast(msg) {
 
 
   const [currentView, setCurrentView] = useState("map"); // map | profile | auth
+  const [currentView, setCurrentView] = useState("map"); // map | profile | auth | leaderboard
   const [user, setUser] = useState(null);
   const [activeBuilding, setActiveBuilding] = useState(null);
 
@@ -58,13 +61,19 @@ function showToast(msg) {
     if (action === "list") {
       setShowList((prev) => !prev);
     }
+    if (action === "leaderboard") {
+      setCurrentView("leaderboard");
+    }
     setMenuOpen(false);
   };
 
-  /* FILTERED LIST OF BUILDINGS */
-  const filteredBuildings = buildings; // We will plug filtering later
+  /* FILTERED LIST OF BUILDINGS (no filtering yet) */
+  const filteredBuildings = buildings;
 
-  /* VIEW SWITCHING */
+  /* ===========================
+         VIEW SWITCHING
+     =========================== */
+
   if (currentView === "auth") {
     return (
       <AuthPage
@@ -81,9 +90,14 @@ function showToast(msg) {
     return <ProfilePage user={user} onBack={() => setCurrentView("map")} />;
   }
 
+  if (currentView === "leaderboard") {
+    return <LeaderboardPage onBack={() => setCurrentView("map")} />;
+  }
+
   /* ===========================
          MAIN MAP VIEW
      =========================== */
+
   return (
     <div className="page">
       <div className="app-shell">
@@ -100,13 +114,20 @@ function showToast(msg) {
 
             {menuOpen && (
               <div className="menu-dropdown">
-                <button className="menu-item">Leaderboard</button>
+                <button
+                  className="menu-item"
+                  onClick={() => handleMenuClick("leaderboard")}
+                >
+                  Leaderboard
+                </button>
+
                 <button
                   className="menu-item"
                   onClick={() => handleMenuClick("list")}
                 >
                   List view
                 </button>
+
                 <button className="menu-item">Suggest others</button>
               </div>
             )}
@@ -219,8 +240,12 @@ function showToast(msg) {
                     }}
                   >
                     <h3>{b.name}</h3>
-                    <p className="list-meta">Floors: {Object.keys(b.floors).length}</p>
-                    <p className="list-meta">Total bathrooms: {totalBaths}</p>
+                    <p className="list-meta">
+                      Floors: {Object.keys(b.floors).length}
+                    </p>
+                    <p className="list-meta">
+                      Total bathrooms: {totalBaths}
+                    </p>
                   </article>
                 );
               })}
@@ -234,7 +259,7 @@ function showToast(msg) {
             </div>
           </div>
 
-          {/* LIST BUTTON (FLOATING) */}
+          {/* LIST BUTTON */}
           <button
             className="see-list-btn"
             onClick={() => setShowList((v) => !v)}
