@@ -666,3 +666,153 @@ body {
   background: transparent !important;
   border: none !important;
 }
+
+/* ---------- PROFILE PAGE ---------- */
+
+.profile-page {
+  margin: 40px auto;
+  padding: 24px 28px 32px;
+  background: #ffeef3; /* matches auth/leaderboard vibe */
+  border-radius: 20px;
+  box-shadow: var(--shadow-soft);
+  width: 100%;
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+/* back button inside profile only */
+.profile-page .back-btn {
+  align-self: flex-start;
+  padding: 8px 16px;
+  border-radius: var(--radius-pill);
+  border: none;
+  background: #f5cbd7;
+  color: var(--text-main);
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.profile-page .back-btn:hover {
+  background: var(--accent);
+  color: #fff;
+}
+
+/* Heading */
+.profile-heading {
+  font-size: 22px;
+  font-weight: 700;
+  color: var(--accent);
+  text-align: center;
+}
+
+/* Main profile info card */
+.profile-card {
+  background: var(--bg-card);
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+/* Rows inside profile card */
+.profile-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px dashed rgba(0, 0, 0, 0.08);
+}
+
+.profile-row:last-child {
+  border-bottom: none;
+}
+
+.profile-label {
+  font-size: 14px;
+  font-weight: 600;
+  color: var(--text-main);
+}
+
+.profile-value {
+  font-size: 14px;
+  color: var(--text-main);
+  word-break: break-all;
+}
+
+/* Recent toilets / reviews section */
+.profile-section {
+  background: #fff;
+  border-radius: 18px;
+  padding: 18px 20px;
+  box-shadow: var(--shadow-soft);
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-section h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: var(--accent);
+  text-align: center;
+}
+
+.profile-section p {
+  font-size: 14px;
+  color: #7b3c47;
+  text-align: center;
+}
+
+/* Reviews list */
+.profile-list {
+  list-style: none;
+  margin: 4px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.profile-list li {
+  background: #fff7fa;
+  border-radius: 14px;
+  padding: 10px 12px;
+  border: 1px solid #f5cbd7;
+  font-size: 14px;
+  color: var(--text-main);
+}
+
+.profile-list li small {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: #7b3c47;
+}
+
+/* Small screens */
+@media (max-width: 600px) {
+  .profile-page {
+    padding: 20px 18px 24px;
+    margin: 24px 12px;
+  }
+
+  .profile-row {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 2px;
+  }
+
+  .profile-section h3 {
+    text-align: left;
+  }
+
+  .profile-section p {
+    text-align: left;
+  }
+}
+
