@@ -10,7 +10,6 @@ import BottomSheet from "./components/BottomSheet";
 
 import buildings from "./data/buildings";
 
-
 /* ===========================
       FILTER DEFINITIONS
    =========================== */
@@ -25,13 +24,12 @@ const FILTERS = [
 function App() {
   const [toastMessage, setToastMessage] = useState("");
 
-function showToast(msg) {
-  setToastMessage(msg);
-  setTimeout(() => setToastMessage(""), 3000);
-}
+  function showToast(msg) {
+    setToastMessage(msg);
+    setTimeout(() => setToastMessage(""), 3000);
+  }
 
-
-  const [currentView, setCurrentView] = useState("map"); // map | profile | auth
+  const [currentView, setCurrentView] = useState("map"); // map | profile | auth | leaderboard
   const [user, setUser] = useState(null);
   const [activeBuilding, setActiveBuilding] = useState(null);
 
@@ -98,158 +96,174 @@ function showToast(msg) {
      =========================== */
 
   return (
-  <div className="page">
-    <div className="app-shell">
+    <div className="page">
+      <div className="app-shell">
 
-      {/* SIDEBAR */}
-      <aside className="sidebar">
-        <div className="menu-wrapper">
-          <button
-            className="menu-button"
-            onClick={() => setMenuOpen(o => !o)}
-          >
-            ☰
-          </button>
+        {/* SIDEBAR */}
+        <aside className="sidebar">
+          <div className="menu-wrapper">
+            <button
+              className="menu-button"
+              onClick={() => setMenuOpen((o) => !o)}
+            >
+              ☰
+            </button>
 
-          {menuOpen && (
-            <div className="menu-dropdown">
-              <button className="menu-item">Leaderboard</button>
-              <button className="menu-item" onClick={() => handleMenuClick("list")}>
-                List view
-              </button>
-              <button className="menu-item">Suggest others</button>
-            </div>
-          )}
-        </div>
-      </aside>
-
-      {/* MAIN CARD AREA */}
-      <section className="main-card">
-
-        {/* HEADER */}
-        <header className="top-bar">
-          <h1 className="title">Toilet Watchers</h1>
-
-          <div className="top-right">
-            {!user && (
-              <button className="login-chip" onClick={() => setCurrentView("auth")}>
-                Log in
-              </button>
-            )}
-
-            {user && (
-              <div className="profile-wrapper">
+            {menuOpen && (
+              <div className="menu-dropdown">
                 <button
-                  className="profile-button"
-                  onClick={() => setProfileOpen(o => !o)}
+                  className="menu-item"
+                  onClick={() => handleMenuClick("leaderboard")}
                 >
-                  {user.username[0].toUpperCase()}
+                  Leaderboard
                 </button>
 
-                {profileOpen && (
-                  <div className="profile-dropdown">
-                    <button className="profile-item" onClick={() => setCurrentView("profile")}>
-                      My profile
-                    </button>
+                <button
+                  className="menu-item"
+                  onClick={() => handleMenuClick("list")}
+                >
+                  List view
+                </button>
 
-                    <button className="profile-item">Settings</button>
-
-                    <button
-                      className="profile-item logout"
-                      onClick={() => {
-                        setUser(null);
-                        setCurrentView("map");
-                      }}
-                    >
-                      Log out
-                    </button>
-                  </div>
-                )}
+                <button className="menu-item">Suggest others</button>
               </div>
             )}
           </div>
-        </header>
+        </aside>
 
-        {/* FILTER BAR */}
-        <div className="filter-bar">
-          {FILTERS.map(f => (
-            <button
-              key={f.key}
-              className={
-                "filter-pill" +
-                (activeFilters[f.key] ? " filter-pill--active" : "")
-              }
-              onClick={() => toggleFilter(f.key)}
-            >
-              {f.label}
-            </button>
-          ))}
-        </div>
+        {/* MAIN CARD AREA */}
+        <section className="main-card">
 
-        {/* MAP */}
-        <div className="map-wrapper">
-          <MapView onSelectBuilding={setActiveBuilding} />
-        </div>
+          {/* HEADER */}
+          <header className="top-bar">
+            <h1 className="title">Toilet Watchers</h1>
 
-        {/* FLOATING SIDE PANEL */}
-        <BottomSheet
-          buildingId={activeBuilding}
-          onClose={() => setActiveBuilding(null)}
-          onToast={showToast}
-        />
+            <div className="top-right">
+              {!user && (
+                <button
+                  className="login-chip"
+                  onClick={() => setCurrentView("auth")}
+                >
+                  Log in
+                </button>
+              )}
 
-        {/* LIST VIEW DRAWER */}
-        <div className={`drawer ${showList ? "drawer--open" : ""}`}>
-          <div className="drawer-content">
-            <h2 className="drawer-title">Buildings</h2> 
-          {filteredBuildings.map(b => {
-            const totalBaths = Object.values(b.floors)
-              .reduce((acc, f) => acc + Object.keys(f).length, 0);
+              {user && (
+                <div className="profile-wrapper">
+                  <button
+                    className="profile-button"
+                    onClick={() => setProfileOpen((o) => !o)}
+                  >
+                    {user.username[0].toUpperCase()}
+                  </button>
 
-            return (
-              <article
-                key={b.id}
-                className="list-item"
-                onClick={() => {
-                  setActiveBuilding(b.id);
-                  setShowList(false);
-                }}
+                  {profileOpen && (
+                    <div className="profile-dropdown">
+                      <button
+                        className="profile-item"
+                        onClick={() => {
+                          setCurrentView("profile");
+                          setProfileOpen(false);
+                        }}
+                      >
+                        My profile
+                      </button>
+
+                      <button className="profile-item">Settings</button>
+
+                      <button
+                        className="profile-item logout"
+                        onClick={() => {
+                          setUser(null);
+                          setCurrentView("map");
+                          setProfileOpen(false);
+                        }}
+                      >
+                        Log out
+                      </button>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+          </header>
+
+          {/* FILTER BAR */}
+          <div className="filter-bar">
+            {FILTERS.map((f) => (
+              <button
+                key={f.key}
+                className={
+                  "filter-pill" +
+                  (activeFilters[f.key] ? " filter-pill--active" : "")
+                }
+                onClick={() => toggleFilter(f.key)}
               >
-                <h3>{b.name}</h3>
-                <p>Floors: {Object.keys(b.floors).length}</p>
-                <p>Total bathrooms: {totalBaths}</p>
-              </article>
-            );
-          })}
+                {f.label}
+              </button>
+            ))}
+          </div>
 
+          {/* MAP */}
+          <div className="map-wrapper">
+            <MapView onSelectBuilding={setActiveBuilding} />
+          </div>
+
+          {/* FLOATING SIDE PANEL */}
+          <BottomSheet
+            buildingId={activeBuilding}
+            onClose={() => setActiveBuilding(null)}
+            onToast={showToast}
+          />
+
+          {/* LIST VIEW DRAWER */}
+          <div className={`drawer ${showList ? "drawer--open" : ""}`}>
+            <div className="drawer-content">
+              <h2 className="drawer-title">Buildings</h2>
+
+              {filteredBuildings.map((b) => {
+                const totalBaths = Object.values(b.floors)
+                  .reduce((acc, f) => acc + Object.keys(f).length, 0);
+
+                return (
+                  <article
+                    key={b.id}
+                    className="list-item"
+                    onClick={() => {
+                      setActiveBuilding(b.id);
+                      setShowList(false);
+                    }}
+                  >
+                    <h3>{b.name}</h3>
+                    <p>Floors: {Object.keys(b.floors).length}</p>
+                    <p>Total bathrooms: {totalBaths}</p>
+                  </article>
+                );
+              })}
+
+              <button
+                className="close-drawer-btn"
+                onClick={() => setShowList(false)}
+              >
+                Close
+              </button>
+            </div>
+          </div>
+
+          {/* LIST BUTTON */}
           <button
-            className="close-drawer-btn"
-            onClick={() => setShowList(false)}
+            className="see-list-btn"
+            onClick={() => setShowList((v) => !v)}
           >
-            Close
+            {showList ? "hide list" : "see list"}
           </button>
-        </div>
-        </div>
 
-        {/* LIST BUTTON */}
-        <button
-          className="see-list-btn"
-          onClick={() => setShowList(v => !v)}
-        >
-          {showList ? "hide list" : "see list"}
-        </button>
-
-        {/* TOAST */}
-        {toastMessage && (
-          <div className="toast">{toastMessage}</div>
-        )}
-
-      </section>
-
+          {/* TOAST */}
+          {toastMessage && <div className="toast">{toastMessage}</div>}
+        </section>
+      </div>
     </div>
-  </div>
-);
-
+  );
 }
 
 export default App;
