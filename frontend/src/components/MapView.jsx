@@ -5,6 +5,7 @@ import "leaflet/dist/leaflet.css";
 import buildings from "../data/buildings";
 
 function MapView({ onSelectBuilding }) {
+  
   useEffect(() => {
     const map = L.map("map").setView([45.505, -73.577], 15);
 
@@ -67,3 +68,4 @@ function MapView({ onSelectBuilding }) {
 }
 
 export default MapView;
+

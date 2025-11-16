@@ -8,6 +8,7 @@ import BottomSheet from "./components/BottomSheet";
 
 import buildings from "./data/buildings";
 
+
 /* ===========================
       FILTER DEFINITIONS
    =========================== */
@@ -20,6 +21,14 @@ const FILTERS = [
 ];
 
 function App() {
+  const [toastMessage, setToastMessage] = useState("");
+
+function showToast(msg) {
+  setToastMessage(msg);
+  setTimeout(() => setToastMessage(""), 2000);
+}
+
+
   const [currentView, setCurrentView] = useState("map"); // map | profile | auth
   const [user, setUser] = useState(null);
   const [activeBuilding, setActiveBuilding] = useState(null);
@@ -185,9 +194,11 @@ function App() {
 
           {/* FLOATING SIDE PANEL */}
           <BottomSheet
-            buildingId={activeBuilding}
-            onClose={() => setActiveBuilding(null)}
-          />
+  buildingId={activeBuilding}
+  onClose={() => setActiveBuilding(null)}
+  onToast={showToast}
+/>
+
 
           {/* LIST VIEW DRAWER */}
           <div className={`drawer ${showList ? "drawer--open" : ""}`}>
@@ -230,6 +241,10 @@ function App() {
           >
             {showList ? "hide list" : "see list"}
           </button>
+          <div className={`toast ${toastMessage ? "toast--show" : ""}`}>
+    {toastMessage}
+  </div>
+
         </section>
       </div>
     </div>
